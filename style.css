@@ -17,5 +17,8 @@ button{background:var(--accent);border-color:var(--accent);color:#fff;font-weigh
 .card:active{cursor:grabbing}
 .card.dragging{opacity:.45}
 .card .del{background:none;border:none;color:#f85149;cursor:pointer;font-size:14px;padding:0}
+.card span{flex:1;overflow-wrap:anywhere}
+.card input.edit{flex:1;min-width:0;padding:4px 6px;font-size:14px}
+.card.editing{cursor:text}
 .col.dragover{border-color:var(--accent)}
 footer{text-align:center;color:var(--muted);padding:24px;font-size:13px}

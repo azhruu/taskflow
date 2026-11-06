@@ -10,6 +10,7 @@
 
 - 🗂️ Three-column Kanban board with live card counts
 - 🖱️ Drag & drop cards between columns (HTML5 drag events)
+- ✏️ Double-click any card to edit its title inline (Enter saves, Esc cancels)
 - ➕ Quick-add form, one-click delete
 - 💾 Auto-save to `localStorage` — refresh-proof
 - 🌑 Clean dark UI, responsive grid

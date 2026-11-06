@@ -44,6 +44,32 @@ function render() {
       el.dataset.id = t.id;
       const span = document.createElement("span");
       span.textContent = t.title;
+      span.title = "Double-click to edit";
+      span.addEventListener("dblclick", () => {
+        el.draggable = false;
+        const input = document.createElement("input");
+        input.className = "edit";
+        input.value = t.title;
+        input.maxLength = 80;
+        input.setAttribute("aria-label", "Edit task title");
+        span.replaceWith(input);
+        input.focus(); input.select();
+        let done = false;
+        const commit = (saveIt) => {
+          if (done) return; done = true;
+          const f = findTask(t.id);
+          if (saveIt && f) {
+            const next = input.value.trim();
+            if (next) { f.task.title = next; save(); }
+          }
+          render();
+        };
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") commit(true);
+          else if (e.key === "Escape") commit(false);
+        });
+        input.addEventListener("blur", () => commit(true));
+      });
       const del = document.createElement("button");
       del.className = "del"; del.textContent = "✕"; del.title = "Delete";
       del.addEventListener("click", () => {
