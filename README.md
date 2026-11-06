@@ -1,0 +1,31 @@
+# TaskFlow
+
+**A lightweight Kanban board that runs entirely in your browser.** Add tasks, drag them across To Do → In Progress → Done, and everything persists automatically.
+
+![JavaScript](https://img.shields.io/badge/JavaScript-vanilla-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![License](https://img.shields.io/badge/license-MIT-blue?style=for-the-badge)
+![Status](https://img.shields.io/badge/status-actively%20building-brightgreen?style=for-the-badge)
+
+## Features
+
+- 🗂️ Three-column Kanban board with live card counts
+- 🖱️ Drag & drop cards between columns (HTML5 drag events)
+- ➕ Quick-add form, one-click delete
+- 💾 Auto-save to `localStorage` — refresh-proof
+- 🌑 Clean dark UI, responsive grid
+
+## Run it
+
+Open `index.html` in any browser, or:
+
+```bash
+python3 -m http.server 8000   # http://localhost:8000
+```
+
+## Roadmap
+
+Custom columns → card labels & due dates → edit cards → board export. Full plan: [ROADMAP.md](ROADMAP.md).
+
+## License
+
+MIT — see [LICENSE](LICENSE).
