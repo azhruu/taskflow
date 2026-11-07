@@ -4,7 +4,7 @@ Each item lands as one complete, tested change.
 
 - [x] Core board: 3 columns, add/delete cards, drag & drop, localStorage
 - [x] Edit a card's title inline
-- [ ] Custom columns (add/rename/delete boards columns)
+- [x] Custom columns (add/rename/delete boards columns)
 - [ ] Card labels (color tags: bug, feature, urgent)
 - [ ] Due dates with overdue highlighting
 - [ ] Search/filter cards by text

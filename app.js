@@ -2,42 +2,164 @@
 "use strict";
 
 const KEY = "taskflow-v1";
-const COLS = ["todo", "doing", "done"];
 const $ = (id) => document.getElementById(id);
+
+const DEFAULT_COLUMNS = [
+  { id: "todo", name: "To Do" },
+  { id: "doing", name: "In Progress" },
+  { id: "done", name: "Done" },
+];
 
 let board = load();
 
+/*
+ * Board shape (v2): { columns: [{id, name}], tasks: { [colId]: [{id, title}] } }
+ * Older saves were a plain { todo: [...], doing: [...], done: [...] } map;
+ * load() migrates those to v2 so existing boards keep their cards.
+ */
 function load() {
   try {
     const b = JSON.parse(localStorage.getItem(KEY));
-    if (b && COLS.every((c) => Array.isArray(b[c]))) return b;
+    if (b && Array.isArray(b.columns) && b.tasks && typeof b.tasks === "object") {
+      const valid = b.columns.filter((c) => c && typeof c.id === "string" && typeof c.name === "string");
+      if (valid.length) {
+        const tasks = {};
+        for (const c of valid) tasks[c.id] = Array.isArray(b.tasks[c.id]) ? b.tasks[c.id] : [];
+        return { columns: valid, tasks };
+      }
+    }
+    if (b && ["todo", "doing", "done"].every((c) => Array.isArray(b[c]))) {
+      const tasks = {};
+      for (const c of DEFAULT_COLUMNS) tasks[c.id] = b[c.id];
+      return { columns: DEFAULT_COLUMNS.map((c) => ({ ...c })), tasks };
+    }
   } catch { /* fall through */ }
-  return { todo: [], doing: [], done: [] };
+  const tasks = {};
+  for (const c of DEFAULT_COLUMNS) tasks[c.id] = [];
+  return { columns: DEFAULT_COLUMNS.map((c) => ({ ...c })), tasks };
 }
 function save() { localStorage.setItem(KEY, JSON.stringify(board)); }
 
+function colName(id) {
+  const c = board.columns.find((x) => x.id === id);
+  return c ? c.name : id;
+}
+
 function findTask(id) {
-  for (const col of COLS) {
-    const i = board[col].findIndex((t) => t.id === id);
-    if (i !== -1) return { col, i, task: board[col][i] };
+  for (const c of board.columns) {
+    const i = board.tasks[c.id].findIndex((t) => t.id === id);
+    if (i !== -1) return { col: c.id, i, task: board.tasks[c.id][i] };
   }
   return null;
 }
 
 function moveTask(id, toCol) {
   const found = findTask(id);
-  if (!found || found.col === toCol) return;
-  board[found.col].splice(found.i, 1);
-  board[toCol].push(found.task);
+  if (!found || found.col === toCol || !board.tasks[toCol]) return;
+  board.tasks[found.col].splice(found.i, 1);
+  board.tasks[toCol].push(found.task);
+  save(); render();
+}
+
+function addColumn(name) {
+  const clean = name.trim().slice(0, 30);
+  if (!clean) return;
+  const id = "c" + Date.now().toString(36);
+  board.columns.push({ id, name: clean });
+  board.tasks[id] = [];
+  save(); render();
+}
+
+function renameColumn(id, name) {
+  const clean = name.trim().slice(0, 30);
+  const c = board.columns.find((x) => x.id === id);
+  if (!c || !clean) return;
+  c.name = clean;
+  save(); render();
+}
+
+function deleteColumn(id) {
+  if (board.columns.length <= 1) return;
+  const c = board.columns.find((x) => x.id === id);
+  if (!c) return;
+  const cards = board.tasks[id].length;
+  const note = cards ? ` and its ${cards} card${cards === 1 ? "" : "s"}` : "";
+  if (!confirm(`Delete column "${c.name}"${note}? This cannot be undone.`)) return;
+  board.columns = board.columns.filter((x) => x.id !== id);
+  delete board.tasks[id];
   save(); render();
 }
 
 function render() {
-  for (const col of COLS) {
-    const wrap = $("col-" + col);
-    wrap.innerHTML = "";
-    $("count-" + col).textContent = board[col].length;
-    for (const t of board[col]) {
+  /* Rebuild the column picker from the current columns. */
+  const picker = $("taskCol");
+  picker.innerHTML = "";
+  for (const c of board.columns) {
+    const opt = document.createElement("option");
+    opt.value = c.id;
+    opt.textContent = c.name;
+    picker.appendChild(opt);
+  }
+
+  const main = $("board");
+  main.innerHTML = "";
+  for (const c of board.columns) {
+    const section = document.createElement("section");
+    section.className = "col";
+    section.dataset.col = c.id;
+
+    const h2 = document.createElement("h2");
+    const title = document.createElement("span");
+    title.className = "col-title";
+    title.textContent = c.name;
+    title.title = "Double-click to rename";
+    title.addEventListener("dblclick", () => {
+      const input = document.createElement("input");
+      input.className = "col-rename";
+      input.value = c.name;
+      input.maxLength = 30;
+      input.setAttribute("aria-label", "Rename column");
+      title.replaceWith(input);
+      input.focus(); input.select();
+      let done = false;
+      const commit = (saveIt) => {
+        if (done) return; done = true;
+        if (saveIt) renameColumn(c.id, input.value);
+        else render();
+      };
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") commit(true);
+        else if (e.key === "Escape") commit(false);
+      });
+      input.addEventListener("blur", () => commit(true));
+    });
+
+    const actions = document.createElement("span");
+    actions.className = "col-actions";
+    const count = document.createElement("span");
+    count.className = "count";
+    count.textContent = board.tasks[c.id].length;
+    const renameBtn = document.createElement("button");
+    renameBtn.type = "button";
+    renameBtn.className = "iconbtn";
+    renameBtn.textContent = "✎";
+    renameBtn.title = "Rename column";
+    renameBtn.setAttribute("aria-label", "Rename column " + c.name);
+    renameBtn.addEventListener("click", () => title.dispatchEvent(new Event("dblclick")));
+    const delBtn = document.createElement("button");
+    delBtn.type = "button";
+    delBtn.className = "iconbtn danger";
+    delBtn.textContent = "✕";
+    delBtn.title = board.columns.length <= 1 ? "Cannot delete the last column" : "Delete column";
+    delBtn.disabled = board.columns.length <= 1;
+    delBtn.setAttribute("aria-label", "Delete column " + c.name);
+    delBtn.addEventListener("click", () => deleteColumn(c.id));
+    actions.append(count, renameBtn, delBtn);
+    h2.append(title, actions);
+
+    const wrap = document.createElement("div");
+    wrap.className = "cards";
+    for (const t of board.tasks[c.id]) {
       const el = document.createElement("div");
       el.className = "card";
       el.draggable = true;
@@ -74,7 +196,7 @@ function render() {
       del.className = "del"; del.textContent = "✕"; del.title = "Delete";
       del.addEventListener("click", () => {
         const f = findTask(t.id);
-        if (f) { board[f.col].splice(f.i, 1); save(); render(); }
+        if (f) { board.tasks[f.col].splice(f.i, 1); save(); render(); }
       });
       el.append(span, del);
       el.addEventListener("dragstart", (e) => {
@@ -84,26 +206,34 @@ function render() {
       el.addEventListener("dragend", () => el.classList.remove("dragging"));
       wrap.appendChild(el);
     }
+
+    section.addEventListener("dragover", (e) => { e.preventDefault(); section.classList.add("dragover"); });
+    section.addEventListener("dragleave", () => section.classList.remove("dragover"));
+    section.addEventListener("drop", (e) => {
+      e.preventDefault(); section.classList.remove("dragover");
+      moveTask(Number(e.dataTransfer.getData("text/plain")), c.id);
+    });
+
+    section.append(h2, wrap);
+    main.appendChild(section);
   }
 }
-
-document.querySelectorAll(".col").forEach((colEl) => {
-  const col = colEl.dataset.col;
-  colEl.addEventListener("dragover", (e) => { e.preventDefault(); colEl.classList.add("dragover"); });
-  colEl.addEventListener("dragleave", () => colEl.classList.remove("dragover"));
-  colEl.addEventListener("drop", (e) => {
-    e.preventDefault(); colEl.classList.remove("dragover");
-    moveTask(Number(e.dataTransfer.getData("text/plain")), col);
-  });
-});
 
 $("addForm").addEventListener("submit", (e) => {
   e.preventDefault();
   const title = $("taskTitle").value.trim();
   if (!title) return;
-  board[$("taskCol").value].push({ id: Date.now(), title });
+  const col = $("taskCol").value;
+  if (!board.tasks[col]) return;
+  board.tasks[col].push({ id: Date.now(), title });
   save(); render();
   $("taskTitle").value = "";
+});
+
+$("addColForm").addEventListener("submit", (e) => {
+  e.preventDefault();
+  addColumn($("colName").value);
+  $("colName").value = "";
 });
 
 render();

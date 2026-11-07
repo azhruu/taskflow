@@ -9,33 +9,21 @@
 <body>
 <header>
   <h1>🗂️ TaskFlow</h1>
-  <p>A lightweight Kanban board. Drag cards between columns, double-click a card to edit its title — everything saves in your browser.</p>
+  <p>A lightweight Kanban board. Drag cards between columns, double-click a card to edit it, and shape the board with your own columns — everything saves in your browser.</p>
 </header>
 
 <form id="addForm">
   <input id="taskTitle" placeholder="New task… e.g. Finish DSA assignment" required maxlength="80">
-  <select id="taskCol">
-    <option value="todo">To Do</option>
-    <option value="doing">In Progress</option>
-    <option value="done">Done</option>
-  </select>
+  <select id="taskCol"></select>
   <button type="submit">Add task</button>
 </form>
 
-<main class="board">
-  <section class="col" data-col="todo">
-    <h2>To Do <span class="count" id="count-todo">0</span></h2>
-    <div class="cards" id="col-todo"></div>
-  </section>
-  <section class="col" data-col="doing">
-    <h2>In Progress <span class="count" id="count-doing">0</span></h2>
-    <div class="cards" id="col-doing"></div>
-  </section>
-  <section class="col" data-col="done">
-    <h2>Done <span class="count" id="count-done">0</span></h2>
-    <div class="cards" id="col-done"></div>
-  </section>
-</main>
+<form id="addColForm" class="addcol">
+  <input id="colName" placeholder="New column name… e.g. Review" required maxlength="30">
+  <button type="submit">+ Add column</button>
+</form>
+
+<main class="board" id="board"></main>
 
 <footer>TaskFlow · vanilla JS + localStorage · MIT</footer>
 <script src="app.js"></script>

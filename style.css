@@ -10,7 +10,17 @@ input{flex:1;min-width:220px}
 button{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700;cursor:pointer}
 .board{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;max-width:1100px;margin:6px auto;padding:0 20px}
 .col{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:14px;min-height:300px}
-.col h2{font-size:16px;margin:0 0 12px;display:flex;justify-content:space-between;align-items:center}
+.col h2{font-size:16px;margin:0 0 12px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.col-title{flex:1;overflow-wrap:anywhere;cursor:text}
+.col-actions{display:flex;align-items:center;gap:6px}
+.iconbtn{background:none;border:1px solid var(--border);border-radius:6px;color:var(--muted);font-size:12px;line-height:1;padding:4px 7px;cursor:pointer}
+.iconbtn:hover{color:var(--text);border-color:var(--accent)}
+.iconbtn.danger:hover{color:#f85149;border-color:#f85149}
+.iconbtn:disabled{opacity:.35;cursor:not-allowed}
+.col-rename{flex:1;min-width:0;padding:4px 6px;font-size:14px}
+form.addcol{margin-top:-8px}
+form.addcol input{flex:0 1 280px;min-width:180px}
+form.addcol button{background:#0d1117;border-color:var(--border);color:var(--text)}
 .count{background:#0d1117;border:1px solid var(--border);border-radius:20px;padding:1px 10px;font-size:12px;color:var(--muted)}
 .cards{display:flex;flex-direction:column;gap:8px;min-height:60px}
 .card{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;gap:8px;cursor:grab}

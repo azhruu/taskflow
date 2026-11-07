@@ -8,7 +8,7 @@
 
 ## Features
 
-- 🗂️ Three-column Kanban board with live card counts
+- 🗂️ Custom columns — add, rename, and delete board columns (with live card counts)
 - 🖱️ Drag & drop cards between columns (HTML5 drag events)
 - ✏️ Double-click any card to edit its title inline (Enter saves, Esc cancels)
 - ➕ Quick-add form, one-click delete
@@ -25,7 +25,7 @@ python3 -m http.server 8000   # http://localhost:8000
 
 ## Roadmap
 
-Custom columns → card labels & due dates → edit cards → board export. Full plan: [ROADMAP.md](ROADMAP.md).
+Card labels & due dates → board export. Full plan: [ROADMAP.md](ROADMAP.md).
 
 ## License
 
