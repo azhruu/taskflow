@@ -9,6 +9,7 @@
 ## Features
 
 - 🗂️ Custom columns — add, rename, and delete board columns (with live card counts)
+- 🏷️ Card labels — tag any card **bug** (red), **feature** (green) or **urgent** (amber) from the 🏷 button; labels persist with the board
 - 🖱️ Drag & drop cards between columns (HTML5 drag events)
 - ✏️ Double-click any card to edit its title inline (Enter saves, Esc cancels)
 - ➕ Quick-add form, one-click delete

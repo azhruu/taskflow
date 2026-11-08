@@ -4,6 +4,15 @@
 const KEY = "taskflow-v1";
 const $ = (id) => document.getElementById(id);
 
+/* Card labels: fixed set of color tags a card can carry (any combination). */
+const LABELS = {
+  bug: { name: "bug" },
+  feature: { name: "feature" },
+  urgent: { name: "urgent" },
+};
+
+let openLabelFor = null; // id of the card whose label menu is open, null = none
+
 const DEFAULT_COLUMNS = [
   { id: "todo", name: "To Do" },
   { id: "doing", name: "In Progress" },
@@ -11,6 +20,11 @@ const DEFAULT_COLUMNS = [
 ];
 
 let board = load();
+
+/* Tasks gained a `labels` array (subset of LABELS keys); older saves lack it. */
+for (const c of board.columns)
+  for (const t of board.tasks[c.id])
+    t.labels = Array.isArray(t.labels) ? t.labels.filter((l) => LABELS[l]) : [];
 
 /*
  * Board shape (v2): { columns: [{id, name}], tasks: { [colId]: [{id, title}] } }
@@ -51,6 +65,16 @@ function findTask(id) {
     if (i !== -1) return { col: c.id, i, task: board.tasks[c.id][i] };
   }
   return null;
+}
+
+function toggleLabel(id, label) {
+  const f = findTask(id);
+  if (!f || !LABELS[label]) return;
+  if (!Array.isArray(f.task.labels)) f.task.labels = [];
+  const i = f.task.labels.indexOf(label);
+  if (i === -1) f.task.labels.push(label);
+  else f.task.labels.splice(i, 1);
+  save(); render();
 }
 
 function moveTask(id, toCol) {
@@ -164,6 +188,21 @@ function render() {
       el.className = "card";
       el.draggable = true;
       el.dataset.id = t.id;
+
+      if (t.labels && t.labels.length) {
+        const row = document.createElement("div");
+        row.className = "labels";
+        for (const key of t.labels) {
+          const chip = document.createElement("span");
+          chip.className = "label label-" + key;
+          chip.textContent = LABELS[key].name;
+          row.appendChild(chip);
+        }
+        el.appendChild(row);
+      }
+
+      const main = document.createElement("div");
+      main.className = "card-main";
       const span = document.createElement("span");
       span.textContent = t.title;
       span.title = "Double-click to edit";
@@ -192,13 +231,45 @@ function render() {
         });
         input.addEventListener("blur", () => commit(true));
       });
+      const tagBtn = document.createElement("button");
+      tagBtn.type = "button";
+      tagBtn.className = "labelbtn"; tagBtn.textContent = "🏷"; tagBtn.title = "Card labels";
+      tagBtn.setAttribute("aria-label", "Card labels for " + t.title);
+      tagBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openLabelFor = openLabelFor === t.id ? null : t.id;
+        render();
+      });
       const del = document.createElement("button");
       del.className = "del"; del.textContent = "✕"; del.title = "Delete";
       del.addEventListener("click", () => {
         const f = findTask(t.id);
         if (f) { board.tasks[f.col].splice(f.i, 1); save(); render(); }
       });
-      el.append(span, del);
+      main.append(span, tagBtn, del);
+      el.appendChild(main);
+
+      if (openLabelFor === t.id) {
+        const menu = document.createElement("div");
+        menu.className = "label-menu";
+        for (const key of Object.keys(LABELS)) {
+          const on = t.labels.includes(key);
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "label-opt" + (on ? " on" : "");
+          const dot = document.createElement("span");
+          dot.className = "dot label-" + key;
+          const txt = document.createElement("span");
+          txt.textContent = LABELS[key].name;
+          const tick = document.createElement("span");
+          tick.className = "tick";
+          tick.textContent = on ? "✓" : "";
+          b.append(dot, txt, tick);
+          b.addEventListener("click", () => toggleLabel(t.id, key));
+          menu.appendChild(b);
+        }
+        el.appendChild(menu);
+      }
       el.addEventListener("dragstart", (e) => {
         e.dataTransfer.setData("text/plain", String(t.id));
         el.classList.add("dragging");
@@ -225,7 +296,7 @@ $("addForm").addEventListener("submit", (e) => {
   if (!title) return;
   const col = $("taskCol").value;
   if (!board.tasks[col]) return;
-  board.tasks[col].push({ id: Date.now(), title });
+  board.tasks[col].push({ id: Date.now(), title, labels: [] });
   save(); render();
   $("taskTitle").value = "";
 });

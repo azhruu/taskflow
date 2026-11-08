@@ -23,11 +23,27 @@ form.addcol input{flex:0 1 280px;min-width:180px}
 form.addcol button{background:#0d1117;border-color:var(--border);color:var(--text)}
 .count{background:#0d1117;border:1px solid var(--border);border-radius:20px;padding:1px 10px;font-size:12px;color:var(--muted)}
 .cards{display:flex;flex-direction:column;gap:8px;min-height:60px}
-.card{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;justify-content:space-between;gap:8px;cursor:grab}
+.card{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;cursor:grab}
 .card:active{cursor:grabbing}
 .card.dragging{opacity:.45}
 .card .del{background:none;border:none;color:#f85149;cursor:pointer;font-size:14px;padding:0}
-.card span{flex:1;overflow-wrap:anywhere}
+.card-main{display:flex;justify-content:space-between;gap:8px;align-items:center}
+.card-main span{flex:1;overflow-wrap:anywhere}
+.labelbtn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0}
+.labelbtn:hover{color:var(--text)}
+.labels{display:flex;flex-wrap:wrap;gap:4px}
+.label{font-size:11px;font-weight:700;border-radius:20px;padding:1px 8px;color:#fff}
+.label-bug{background:#f85149}
+.label-feature{background:#3fb950}
+.label-urgent{background:#d29922;color:#0d1117}
+.label-menu{display:flex;flex-direction:column;gap:4px;border-top:1px solid var(--border);padding-top:6px}
+.label-opt{display:flex;align-items:center;gap:8px;background:none;border:1px solid var(--border);color:var(--text);border-radius:6px;padding:5px 8px;font-weight:400;cursor:pointer;text-align:left}
+.label-opt.on{border-color:var(--accent)}
+.label-opt .dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.dot.label-bug{background:#f85149}
+.dot.label-feature{background:#3fb950}
+.dot.label-urgent{background:#d29922}
+.label-opt .tick{margin-left:auto;color:var(--accent)}
 .card input.edit{flex:1;min-width:0;padding:4px 6px;font-size:14px}
 .card.editing{cursor:text}
 .col.dragover{border-color:var(--accent)}
