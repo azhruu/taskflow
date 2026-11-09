@@ -44,6 +44,16 @@ form.addcol button{background:#0d1117;border-color:var(--border);color:var(--tex
 .dot.label-feature{background:#3fb950}
 .dot.label-urgent{background:#d29922}
 .label-opt .tick{margin-left:auto;color:var(--accent)}
+.due{background:none;border:1px solid var(--border);border-radius:20px;padding:2px 10px;font-size:12px;color:var(--muted);cursor:pointer;text-align:left;align-self:flex-start}
+.due:hover{color:var(--text);border-color:var(--accent)}
+.due-overdue{border-color:#f85149;color:#f85149;font-weight:700}
+.due-today{border-color:#d29922;color:#d29922;font-weight:700}
+.due-done{color:var(--muted)}
+.due-edit{display:flex;gap:6px;align-items:center}
+.due-input{flex:1;min-width:0;padding:5px 8px;font-size:13px}
+.due-clear{background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:5px 9px;font-size:12px;font-weight:400;cursor:pointer}
+.due-clear:hover{color:#f85149;border-color:#f85149}
+form #taskDue{flex:0 1 160px;min-width:140px}
 .card input.edit{flex:1;min-width:0;padding:4px 6px;font-size:14px}
 .card.editing{cursor:text}
 .col.dragover{border-color:var(--accent)}

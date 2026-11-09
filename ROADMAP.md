@@ -6,7 +6,7 @@ Each item lands as one complete, tested change.
 - [x] Edit a card's title inline
 - [x] Custom columns (add/rename/delete boards columns)
 - [x] Card labels (color tags: bug, feature, urgent)
-- [ ] Due dates with overdue highlighting
+- [x] Due dates with overdue highlighting
 - [ ] Search/filter cards by text
 - [ ] Export/import board as JSON
 - [ ] Card counter stats header (done % progress bar)

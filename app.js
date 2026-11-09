@@ -12,6 +12,7 @@ const LABELS = {
 };
 
 let openLabelFor = null; // id of the card whose label menu is open, null = none
+let openDueFor = null; // id of the card whose due-date editor is open, null = none
 
 const DEFAULT_COLUMNS = [
   { id: "todo", name: "To Do" },
@@ -23,8 +24,38 @@ let board = load();
 
 /* Tasks gained a `labels` array (subset of LABELS keys); older saves lack it. */
 for (const c of board.columns)
-  for (const t of board.tasks[c.id])
+  for (const t of board.tasks[c.id]) {
     t.labels = Array.isArray(t.labels) ? t.labels.filter((l) => LABELS[l]) : [];
+    /* Tasks also gained a `due` date ("YYYY-MM-DD" or null); older saves lack it. */
+    t.due = parseDue(t.due) ? t.due : null;
+  }
+
+/* Due dates are plain "YYYY-MM-DD" strings, compared as local dates. */
+function parseDue(due) {
+  if (typeof due !== "string") return null;
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(due);
+  if (!m) return null;
+  const d = new Date(+m[1], +m[2] - 1, +m[3]);
+  return d.getFullYear() === +m[1] && d.getMonth() === +m[2] - 1 && d.getDate() === +m[3] ? d : null;
+}
+function dueStatus(due, now) {
+  const d = parseDue(due);
+  if (!d) return null;
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  if (d.getTime() < today.getTime()) return "overdue";
+  if (d.getTime() === today.getTime()) return "today";
+  return "future";
+}
+function formatDue(due) {
+  const d = parseDue(due);
+  return d ? d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) : "";
+}
+function setDue(id, due) {
+  const f = findTask(id);
+  if (!f) return;
+  f.task.due = parseDue(due) ? due : null;
+  save(); render();
+}
 
 /*
  * Board shape (v2): { columns: [{id, name}], tasks: { [colId]: [{id, title}] } }
@@ -240,14 +271,60 @@ function render() {
         openLabelFor = openLabelFor === t.id ? null : t.id;
         render();
       });
+      const dueBtn = document.createElement("button");
+      dueBtn.type = "button";
+      dueBtn.className = "labelbtn"; dueBtn.textContent = "📅"; dueBtn.title = t.due ? "Due " + formatDue(t.due) + " — click to change" : "Set due date";
+      dueBtn.setAttribute("aria-label", "Set due date for " + t.title);
+      dueBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        openDueFor = openDueFor === t.id ? null : t.id;
+        render();
+      });
       const del = document.createElement("button");
       del.className = "del"; del.textContent = "✕"; del.title = "Delete";
       del.addEventListener("click", () => {
         const f = findTask(t.id);
         if (f) { board.tasks[f.col].splice(f.i, 1); save(); render(); }
       });
-      main.append(span, tagBtn, del);
+      main.append(span, tagBtn, dueBtn, del);
       el.appendChild(main);
+
+      /* Due date: a chip (red when overdue, amber when due today), or a date picker. */
+      if (openDueFor === t.id) {
+        const row = document.createElement("div");
+        row.className = "due-edit";
+        const input = document.createElement("input");
+        input.type = "date";
+        input.className = "due-input";
+        input.value = t.due || "";
+        input.setAttribute("aria-label", "Due date for " + t.title);
+        input.addEventListener("change", () => { openDueFor = null; setDue(t.id, input.value); });
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") { openDueFor = null; render(); }
+        });
+        input.addEventListener("blur", () => { openDueFor = null; render(); });
+        row.appendChild(input);
+        if (t.due) {
+          const clear = document.createElement("button");
+          clear.type = "button";
+          clear.className = "due-clear";
+          clear.textContent = "Clear";
+          clear.addEventListener("mousedown", (e) => { e.preventDefault(); openDueFor = null; setDue(t.id, ""); });
+          row.appendChild(clear);
+        }
+        el.appendChild(row);
+        input.focus();
+      } else if (t.due) {
+        const status = dueStatus(t.due, new Date());
+        const chip = document.createElement("button");
+        chip.type = "button";
+        /* Cards already in Done stay neutral — the work is finished, not late. */
+        chip.className = "due" + (c.id === "done" ? " due-done" : status ? " due-" + status : "");
+        chip.textContent = "📅 " + formatDue(t.due) + (c.id !== "done" && status === "overdue" ? " · overdue" : status === "today" ? " · due today" : "");
+        chip.title = "Click to change the due date";
+        chip.addEventListener("click", () => { openDueFor = t.id; render(); });
+        el.appendChild(chip);
+      }
 
       if (openLabelFor === t.id) {
         const menu = document.createElement("div");
@@ -296,9 +373,11 @@ $("addForm").addEventListener("submit", (e) => {
   if (!title) return;
   const col = $("taskCol").value;
   if (!board.tasks[col]) return;
-  board.tasks[col].push({ id: Date.now(), title, labels: [] });
+  const due = $("taskDue").value;
+  board.tasks[col].push({ id: Date.now(), title, labels: [], due: parseDue(due) ? due : null });
   save(); render();
   $("taskTitle").value = "";
+  $("taskDue").value = "";
 });
 
 $("addColForm").addEventListener("submit", (e) => {
