@@ -13,6 +13,7 @@ const LABELS = {
 
 let openLabelFor = null; // id of the card whose label menu is open, null = none
 let openDueFor = null; // id of the card whose due-date editor is open, null = none
+let searchQuery = ""; // live card filter text, "" = show every card
 
 const DEFAULT_COLUMNS = [
   { id: "todo", name: "To Do" },
@@ -55,6 +56,15 @@ function setDue(id, due) {
   if (!f) return;
   f.task.due = parseDue(due) ? due : null;
   save(); render();
+}
+
+/* Search: a card matches when its title or any of its label names contains the query. */
+function matchesSearch(task, query) {
+  if (!query) return true;
+  const hay = [task.title]
+    .concat((task.labels || []).map((l) => (LABELS[l] ? LABELS[l].name : l)))
+    .join(" ").toLowerCase();
+  return hay.includes(query);
 }
 
 /*
@@ -158,6 +168,20 @@ function render() {
 
   const main = $("board");
   main.innerHTML = "";
+
+  /* Live search: count matches first so the status line is exact. */
+  const q = searchQuery.trim().toLowerCase();
+  let total = 0, shown = 0;
+  for (const c of board.columns)
+    for (const t of board.tasks[c.id]) {
+      total++;
+      if (matchesSearch(t, q)) shown++;
+    }
+  $("searchCount").textContent = q
+    ? (shown ? shown + " of " + total + " card" + (total === 1 ? "" : "s")
+             : "No cards match \"" + searchQuery.trim() + "\"")
+    : "";
+
   for (const c of board.columns) {
     const section = document.createElement("section");
     section.className = "col";
@@ -214,7 +238,10 @@ function render() {
 
     const wrap = document.createElement("div");
     wrap.className = "cards";
+    let shownInCol = 0;
     for (const t of board.tasks[c.id]) {
+      if (!matchesSearch(t, q)) continue;
+      shownInCol++;
       const el = document.createElement("div");
       el.className = "card";
       el.draggable = true;
@@ -355,6 +382,14 @@ function render() {
       wrap.appendChild(el);
     }
 
+    /* While searching, say so in columns where nothing matches. */
+    if (q && shownInCol === 0) {
+      const empty = document.createElement("p");
+      empty.className = "no-match";
+      empty.textContent = "No matching cards";
+      wrap.appendChild(empty);
+    }
+
     section.addEventListener("dragover", (e) => { e.preventDefault(); section.classList.add("dragover"); });
     section.addEventListener("dragleave", () => section.classList.remove("dragover"));
     section.addEventListener("drop", (e) => {
@@ -384,6 +419,12 @@ $("addColForm").addEventListener("submit", (e) => {
   e.preventDefault();
   addColumn($("colName").value);
   $("colName").value = "";
+});
+
+/* Live search: filter as you type; Escape clears the filter. */
+$("search").addEventListener("input", () => { searchQuery = $("search").value; render(); });
+$("search").addEventListener("keydown", (e) => {
+  if (e.key === "Escape") { searchQuery = ""; $("search").value = ""; render(); }
 });
 
 render();

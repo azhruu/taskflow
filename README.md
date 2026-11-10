@@ -8,6 +8,7 @@
 
 ## Features
 
+- 🔎 Search/filter — live text search across card titles and label names, with a match count and Esc to clear
 - 🗂️ Custom columns — add, rename, and delete board columns (with live card counts)
 - 🏷️ Card labels — tag any card **bug** (red), **feature** (green) or **urgent** (amber) from the 🏷 button; labels persist with the board
 - 📅 Due dates — pick one in the add form or with the 📅 button on any card; overdue cards turn red, due-today amber (cards in Done stay neutral), click the date to change or clear it
@@ -27,7 +28,7 @@ python3 -m http.server 8000   # http://localhost:8000
 
 ## Roadmap
 
-Card labels & due dates → board export. Full plan: [ROADMAP.md](ROADMAP.md).
+Card labels & due dates → search/filter. Full plan: [ROADMAP.md](ROADMAP.md).
 
 ## License
 

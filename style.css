@@ -21,6 +21,10 @@ button{background:var(--accent);border-color:var(--accent);color:#fff;font-weigh
 form.addcol{margin-top:-8px}
 form.addcol input{flex:0 1 280px;min-width:180px}
 form.addcol button{background:#0d1117;border-color:var(--border);color:var(--text)}
+.searchrow{display:flex;gap:10px;align-items:center;max-width:1100px;margin:8px auto;padding:0 20px}
+.searchrow input{flex:1}
+.search-count{color:var(--muted);font-size:13px;white-space:nowrap}
+.no-match{color:var(--muted);font-size:13px;text-align:center;margin:8px 0}
 .count{background:#0d1117;border:1px solid var(--border);border-radius:20px;padding:1px 10px;font-size:12px;color:var(--muted)}
 .cards{display:flex;flex-direction:column;gap:8px;min-height:60px}
 .card{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;cursor:grab}
