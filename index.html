@@ -9,7 +9,7 @@
 <body>
 <header>
   <h1>🗂️ TaskFlow</h1>
-  <p>A lightweight Kanban board. Drag cards between columns, tag them with labels, set due dates, double-click a card to edit it, search cards by text or label, and shape the board with your own columns — everything saves in your browser.</p>
+  <p>A lightweight Kanban board. Drag cards between columns, tag them with labels, set due dates, double-click a card to edit it, search cards by text or label, export the board as JSON or import one back, and shape the board with your own columns — everything saves in your browser.</p>
 </header>
 
 <form id="addForm">
@@ -27,6 +27,12 @@
 <div class="searchrow">
   <input id="search" type="search" placeholder="Search cards… e.g. bug fix" aria-label="Search cards" maxlength="80">
   <span id="searchCount" class="search-count" aria-live="polite"></span>
+</div>
+
+<div class="toolbar">
+  <button type="button" id="exportBtn" class="toolbtn">⬇ Export board (JSON)</button>
+  <button type="button" id="importBtn" class="toolbtn">⬆ Import board (JSON)</button>
+  <input type="file" id="importFile" accept=".json,application/json" hidden>
 </div>
 
 <main class="board" id="board"></main>

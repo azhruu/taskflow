@@ -8,7 +8,7 @@ Each item lands as one complete, tested change.
 - [x] Card labels (color tags: bug, feature, urgent)
 - [x] Due dates with overdue highlighting
 - [x] Search/filter cards by text
-- [ ] Export/import board as JSON
+- [x] Export/import board as JSON
 - [ ] Card counter stats header (done % progress bar)
 - [ ] Keyboard shortcut: N for new task
 - [ ] Sample board button for first-time users

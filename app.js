@@ -95,6 +95,59 @@ function load() {
 }
 function save() { localStorage.setItem(KEY, JSON.stringify(board)); }
 
+/*
+ * Export/import: the whole board travels as one JSON file so it can be
+ * backed up, moved to another browser, or shared.
+ * { app, version, exportedAt, board } — validateBoardData also accepts a
+ * bare board object, and normalises it (drops unknown labels, bad dates,
+ * over-long titles) so a hand-edited file can't corrupt the board.
+ */
+function serializeBoard() {
+  return JSON.stringify({ app: "taskflow", version: 1, exportedAt: new Date().toISOString(), board }, null, 2);
+}
+function validateBoardData(data) {
+  const b = data && data.board ? data.board : data;
+  if (!b || !Array.isArray(b.columns) || !b.tasks || typeof b.tasks !== "object") return null;
+  const valid = b.columns.filter((c) => c && typeof c.id === "string" && typeof c.name === "string");
+  if (!valid.length) return null;
+  const tasks = {};
+  for (const c of valid) {
+    const list = Array.isArray(b.tasks[c.id]) ? b.tasks[c.id] : [];
+    tasks[c.id] = list
+      .filter((t) => t && typeof t.title === "string" && t.title.trim())
+      .map((t) => ({
+        id: typeof t.id === "number" ? t.id : Date.now(),
+        title: t.title.trim().slice(0, 80),
+        labels: Array.isArray(t.labels) ? t.labels.filter((l) => LABELS[l]) : [],
+        due: parseDue(t.due) ? t.due : null,
+      }));
+  }
+  return { columns: valid.map((c) => ({ id: c.id, name: c.name.trim().slice(0, 30) })), tasks };
+}
+function exportBoard() {
+  const blob = new Blob([serializeBoard()], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "taskflow-board-" + new Date().toISOString().slice(0, 10) + ".json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function importBoard(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    let data;
+    try { data = JSON.parse(reader.result); }
+    catch { alert("That file is not valid JSON."); return; }
+    const next = validateBoardData(data);
+    if (!next) { alert("That file is not a TaskFlow board export."); return; }
+    const cards = Object.values(next.tasks).reduce((n, l) => n + l.length, 0);
+    if (!confirm(`Import this board? It replaces your current board (${next.columns.length} columns, ${cards} cards).`)) return;
+    board = next;
+    save(); render();
+  };
+  reader.readAsText(file);
+}
+
 function colName(id) {
   const c = board.columns.find((x) => x.id === id);
   return c ? c.name : id;
@@ -425,6 +478,15 @@ $("addColForm").addEventListener("submit", (e) => {
 $("search").addEventListener("input", () => { searchQuery = $("search").value; render(); });
 $("search").addEventListener("keydown", (e) => {
   if (e.key === "Escape") { searchQuery = ""; $("search").value = ""; render(); }
+});
+
+/* Export/import: download the board as JSON, or load one back in. */
+$("exportBtn").addEventListener("click", exportBoard);
+$("importBtn").addEventListener("click", () => $("importFile").click());
+$("importFile").addEventListener("change", (e) => {
+  const file = e.target.files && e.target.files[0];
+  if (file) importBoard(file);
+  e.target.value = "";
 });
 
 render();
