@@ -51,6 +51,43 @@ function formatDue(due) {
   const d = parseDue(due);
   return d ? d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) : "";
 }
+
+/*
+ * Stats header: how much of the board is done, as a progress bar.
+ * The "done" column is the column with id "done", or — for boards whose
+ * columns were renamed — one named done / complete / completed / finished.
+ * Overdue counts cards outside the done column whose due date has passed.
+ */
+const DONE_COLUMN_NAMES = ["done", "complete", "completed", "finished"];
+function doneColumnId(b) {
+  const byId = b.columns.find((c) => c.id === "done");
+  if (byId) return byId.id;
+  const byName = b.columns.find((c) => DONE_COLUMN_NAMES.includes(c.name.trim().toLowerCase()));
+  return byName ? byName.id : null;
+}
+function computeStats(b, now) {
+  let total = 0, done = 0, overdue = 0;
+  const doneId = doneColumnId(b);
+  for (const c of b.columns)
+    for (const t of b.tasks[c.id] || []) {
+      total++;
+      if (c.id === doneId) done++;
+      else if (dueStatus(t.due, now) === "overdue") overdue++;
+    }
+  return { total, done, active: total - done, overdue, pct: total ? Math.round((done / total) * 100) : 0 };
+}
+function renderStats() {
+  const s = computeStats(board, new Date());
+  $("statsSummary").textContent = s.total
+    ? s.done + " of " + s.total + " done · " + s.pct + "%"
+    : "No cards yet — add your first task";
+  $("statsDetail").textContent = s.total
+    ? s.active + " active" + (s.overdue ? " · " + s.overdue + " overdue" : "")
+    : "";
+  $("statsBar").style.width = s.pct + "%";
+  $("statsBarWrap").setAttribute("aria-valuenow", String(s.pct));
+  $("statsBarWrap").setAttribute("aria-valuetext", s.pct + "% done");
+}
 function setDue(id, due) {
   const f = findTask(id);
   if (!f) return;
@@ -209,6 +246,8 @@ function deleteColumn(id) {
 }
 
 function render() {
+  renderStats();
+
   /* Rebuild the column picker from the current columns. */
   const picker = $("taskCol");
   picker.innerHTML = "";
