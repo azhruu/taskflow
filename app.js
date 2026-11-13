@@ -519,6 +519,33 @@ $("search").addEventListener("keydown", (e) => {
   if (e.key === "Escape") { searchQuery = ""; $("search").value = ""; render(); }
 });
 
+/*
+ * Keyboard shortcut: press N anywhere except while typing in a field to
+ * jump straight to the new-task box, so adding a task never needs the
+ * mouse. Ctrl/Cmd/Alt+N are left alone for the browser, and Esc in the
+ * box leaves it again.
+ */
+function isTypingTarget(el) {
+  if (!el) return false;
+  const tag = (el.tagName || "").toLowerCase();
+  return tag === "input" || tag === "textarea" || tag === "select" || el.isContentEditable === true;
+}
+function newTaskShortcut(event) {
+  if (!event || (event.key !== "n" && event.key !== "N")) return false;
+  if (event.ctrlKey || event.metaKey || event.altKey) return false;
+  return !isTypingTarget(event.target);
+}
+document.addEventListener("keydown", (e) => {
+  if (!newTaskShortcut(e)) return;
+  e.preventDefault();
+  const title = $("taskTitle");
+  title.scrollIntoView({ block: "nearest" });
+  title.focus();
+});
+$("taskTitle").addEventListener("keydown", (e) => {
+  if (e.key === "Escape") $("taskTitle").blur();
+});
+
 /* Export/import: download the board as JSON, or load one back in. */
 $("exportBtn").addEventListener("click", exportBoard);
 $("importBtn").addEventListener("click", () => $("importFile").click());
