@@ -190,6 +190,53 @@ function colName(id) {
   return c ? c.name : id;
 }
 
+/*
+ * Sample board: a small realistic board first-time users can load to
+ * explore the app — columns, labels and due dates included. Due dates
+ * are relative to today (one overdue, one due today, one in two days)
+ * so the sample always shows the due-date states. Pure apart from the
+ * ids, which just need to be unique within the board.
+ */
+function sampleDue(offsetDays, now) {
+  const d = new Date(now.getFullYear(), now.getMonth(), now.getDate() + offsetDays);
+  const pad = (n) => String(n).padStart(2, "0");
+  return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+}
+function buildSampleBoard(now) {
+  const base = now.getTime();
+  return {
+    columns: DEFAULT_COLUMNS.map((c) => ({ ...c })),
+    tasks: {
+      todo: [
+        { id: base + 1, title: "Plan the sprint kickoff", labels: ["feature"], due: sampleDue(2, now) },
+        { id: base + 2, title: "Fix login button on mobile", labels: ["bug", "urgent"], due: sampleDue(-1, now) },
+        { id: base + 3, title: "Draft release notes", labels: [], due: null },
+      ],
+      doing: [
+        { id: base + 4, title: "Add dark mode toggle", labels: ["feature"], due: sampleDue(0, now) },
+        { id: base + 5, title: "Review pull request #42", labels: [], due: null },
+      ],
+      done: [
+        { id: base + 6, title: "Set up the project repo", labels: [], due: null },
+        { id: base + 7, title: "Write the README", labels: ["feature"], due: null },
+      ],
+    },
+  };
+}
+function boardIsEmpty(b) {
+  return b.columns.every((c) => !(b.tasks[c.id] || []).length);
+}
+/*
+ * Load the sample board. An empty board loads straight away; a board
+ * with cards asks first, since loading replaces the current board
+ * (same guard as import).
+ */
+function loadSampleBoard() {
+  if (!boardIsEmpty(board) && !confirm("Load the sample board? It replaces your current board.")) return;
+  board = buildSampleBoard(new Date());
+  save(); render();
+}
+
 function findTask(id) {
   for (const c of board.columns) {
     const i = board.tasks[c.id].findIndex((t) => t.id === id);
@@ -548,6 +595,7 @@ $("taskTitle").addEventListener("keydown", (e) => {
 
 /* Export/import: download the board as JSON, or load one back in. */
 $("exportBtn").addEventListener("click", exportBoard);
+$("sampleBtn").addEventListener("click", loadSampleBoard);
 $("importBtn").addEventListener("click", () => $("importFile").click());
 $("importFile").addEventListener("change", (e) => {
   const file = e.target.files && e.target.files[0];

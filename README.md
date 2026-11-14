@@ -8,6 +8,7 @@
 
 ## Features
 
+- 🎲 Sample board — one click loads a small realistic board (labels, due dates, a card in each state) so first-time users can explore; an empty board loads straight away, a board with cards asks first since it replaces the board
 - ⌨️ Keyboard shortcut — press **N** anywhere (except while typing) to jump to the new-task box; Esc leaves it again
 - 📊 Card counter stats header — live count of done vs total cards with a progress bar and overdue count, updated on every change
 - 📦 Export/import — download the whole board as one JSON file, or import one back (invalid files are rejected, unknown labels and bad dates are dropped, import confirms before replacing the board)
@@ -31,7 +32,7 @@ python3 -m http.server 8000   # http://localhost:8000
 
 ## Roadmap
 
-Search/filter → keyboard shortcut (N for new task). Full plan: [ROADMAP.md](ROADMAP.md).
+Keyboard shortcut (N for new task) → sample board button. The roadmap is now complete — full plan: [ROADMAP.md](ROADMAP.md).
 
 ## License
 

@@ -11,4 +11,4 @@ Each item lands as one complete, tested change.
 - [x] Export/import board as JSON
 - [x] Card counter stats header (done % progress bar)
 - [x] Keyboard shortcut: N for new task — press N anywhere (except while typing) to jump to the new-task box; Esc leaves it again
-- [ ] Sample board button for first-time users
+- [x] Sample board button for first-time users
