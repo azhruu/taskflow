@@ -582,12 +582,30 @@ function newTaskShortcut(event) {
   if (event.ctrlKey || event.metaKey || event.altKey) return false;
   return !isTypingTarget(event.target);
 }
+/*
+ * Same idea for search: press / anywhere except while typing to jump to
+ * the search box, so filtering the board never needs the mouse either.
+ * Ctrl/Cmd/Alt+/ are left alone for the browser.
+ */
+function searchShortcut(event) {
+  if (!event || event.key !== "/") return false;
+  if (event.ctrlKey || event.metaKey || event.altKey) return false;
+  return !isTypingTarget(event.target);
+}
 document.addEventListener("keydown", (e) => {
-  if (!newTaskShortcut(e)) return;
-  e.preventDefault();
-  const title = $("taskTitle");
-  title.scrollIntoView({ block: "nearest" });
-  title.focus();
+  if (newTaskShortcut(e)) {
+    e.preventDefault();
+    const title = $("taskTitle");
+    title.scrollIntoView({ block: "nearest" });
+    title.focus();
+    return;
+  }
+  if (searchShortcut(e)) {
+    e.preventDefault();
+    const search = $("search");
+    search.scrollIntoView({ block: "nearest" });
+    search.focus();
+  }
 });
 $("taskTitle").addEventListener("keydown", (e) => {
   if (e.key === "Escape") $("taskTitle").blur();

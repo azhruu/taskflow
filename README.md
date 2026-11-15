@@ -9,7 +9,7 @@
 ## Features
 
 - 🎲 Sample board — one click loads a small realistic board (labels, due dates, a card in each state) so first-time users can explore; an empty board loads straight away, a board with cards asks first since it replaces the board
-- ⌨️ Keyboard shortcut — press **N** anywhere (except while typing) to jump to the new-task box; Esc leaves it again
+- ⌨️ Keyboard shortcut — press **N** anywhere (except while typing) to jump to the new-task box; Esc leaves it again. Press **/** anywhere to jump to the search box
 - 📊 Card counter stats header — live count of done vs total cards with a progress bar and overdue count, updated on every change
 - 📦 Export/import — download the whole board as one JSON file, or import one back (invalid files are rejected, unknown labels and bad dates are dropped, import confirms before replacing the board)
 - 🔎 Search/filter — live text search across card titles and label names, with a match count and Esc to clear
