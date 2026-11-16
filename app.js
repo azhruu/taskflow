@@ -390,9 +390,19 @@ function render() {
         const row = document.createElement("div");
         row.className = "labels";
         for (const key of t.labels) {
-          const chip = document.createElement("span");
+          /* A label chip is also a filter: click it to show only cards with that label. */
+          const chip = document.createElement("button");
+          chip.type = "button";
           chip.className = "label label-" + key;
           chip.textContent = LABELS[key].name;
+          chip.title = "Filter by the " + LABELS[key].name + " label";
+          chip.setAttribute("aria-label", "Filter by the " + LABELS[key].name + " label");
+          chip.addEventListener("click", (e) => {
+            e.stopPropagation();
+            searchQuery = LABELS[key].name;
+            $("search").value = LABELS[key].name;
+            render();
+          });
           row.appendChild(chip);
         }
         el.appendChild(row);

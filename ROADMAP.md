@@ -13,3 +13,4 @@ Each item lands as one complete, tested change.
 - [x] Keyboard shortcut: N for new task — press N anywhere (except while typing) to jump to the new-task box; Esc leaves it again
 - [x] Sample board button for first-time users
 - [x] Polish: / focuses the search box — same anywhere-but-typing rule as the N shortcut, so filtering the board never needs the mouse
+- [x] Polish: click a label chip on a card to filter the board by that label — it fills the search box with the label name, so the existing search does the filtering

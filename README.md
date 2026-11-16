@@ -12,7 +12,7 @@
 - ⌨️ Keyboard shortcut — press **N** anywhere (except while typing) to jump to the new-task box; Esc leaves it again. Press **/** anywhere to jump to the search box
 - 📊 Card counter stats header — live count of done vs total cards with a progress bar and overdue count, updated on every change
 - 📦 Export/import — download the whole board as one JSON file, or import one back (invalid files are rejected, unknown labels and bad dates are dropped, import confirms before replacing the board)
-- 🔎 Search/filter — live text search across card titles and label names, with a match count and Esc to clear
+- 🔎 Search/filter — live text search across card titles and label names, with a match count and Esc to clear; click a label chip on any card to filter by that label
 - 🗂️ Custom columns — add, rename, and delete board columns (with live card counts)
 - 🏷️ Card labels — tag any card **bug** (red), **feature** (green) or **urgent** (amber) from the 🏷 button; labels persist with the board
 - 📅 Due dates — pick one in the add form or with the 📅 button on any card; overdue cards turn red, due-today amber (cards in Done stay neutral), click the date to change or clear it
