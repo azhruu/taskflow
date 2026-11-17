@@ -16,7 +16,7 @@
 - 🗂️ Custom columns — add, rename, and delete board columns (with live card counts)
 - 🏷️ Card labels — tag any card **bug** (red), **feature** (green) or **urgent** (amber) from the 🏷 button; labels persist with the board
 - 📅 Due dates — pick one in the add form or with the 📅 button on any card; overdue cards turn red, due-today amber (cards in Done stay neutral), click the date to change or clear it
-- 🖱️ Drag & drop cards between columns (HTML5 drag events)
+- 🖱️ Drag & drop cards between columns (HTML5 drag events) — or use the ◀ ▶ buttons on a card to move it to the neighbouring column without dragging
 - ✏️ Double-click any card to edit its title inline (Enter saves, Esc cancels)
 - ➕ Quick-add form, one-click delete
 - 💾 Auto-save to `localStorage` — refresh-proof

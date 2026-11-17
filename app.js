@@ -263,6 +263,17 @@ function moveTask(id, toCol) {
   save(); render();
 }
 
+/*
+ * Drag-free move: the column next to `colId` in `dir` (+1 right, -1 left),
+ * or null at the board's edge. The ◀ ▶ buttons on a card use this so a
+ * card can change columns without dragging (touch, keyboard, mouse).
+ */
+function adjacentColumn(colId, dir) {
+  const i = board.columns.findIndex((x) => x.id === colId);
+  const next = board.columns[i + dir];
+  return next ? next.id : null;
+}
+
 function addColumn(name) {
   const clean = name.trim().slice(0, 30);
   if (!clean) return;
@@ -438,8 +449,23 @@ function render() {
         });
         input.addEventListener("blur", () => commit(true));
       });
-      const tagBtn = document.createElement("button");
-      tagBtn.type = "button";
+      /* Move buttons: shift the card to the neighbouring column without dragging. */
+      const prevCol = adjacentColumn(c.id, -1);
+      const nextCol = adjacentColumn(c.id, 1);
+      const moveBtn = (col, glyph, label) => {
+        const b = document.createElement("button");
+        b.type = "button";
+        b.className = "labelbtn"; b.textContent = glyph;
+        b.title = col ? "Move to " + colName(col) : "No column " + label;
+        b.setAttribute("aria-label", "Move " + t.title + " to " + (col ? colName(col) : "no " + label + " column"));
+        b.disabled = !col;
+        b.addEventListener("click", (e) => { e.stopPropagation(); if (col) moveTask(t.id, col); });
+        return b;
+      };
+      const prevBtn = moveBtn(prevCol, "◀", "previous");
+      const nextBtn = moveBtn(nextCol, "▶", "next");
+
+      const tagBtn = document.createElement("button");      tagBtn.type = "button";
       tagBtn.className = "labelbtn"; tagBtn.textContent = "🏷"; tagBtn.title = "Card labels";
       tagBtn.setAttribute("aria-label", "Card labels for " + t.title);
       tagBtn.addEventListener("click", (e) => {
@@ -462,7 +488,7 @@ function render() {
         const f = findTask(t.id);
         if (f) { board.tasks[f.col].splice(f.i, 1); save(); render(); }
       });
-      main.append(span, tagBtn, dueBtn, del);
+      main.append(span, prevBtn, nextBtn, tagBtn, dueBtn, del);
       el.appendChild(main);
 
       /* Due date: a chip (red when overdue, amber when due today), or a date picker. */
