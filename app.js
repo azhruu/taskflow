@@ -303,8 +303,32 @@ function deleteColumn(id) {
   save(); render();
 }
 
+/*
+ * Clear completed: remove every card in the done column at once, after
+ * a confirm naming how many cards go. Nothing happens when the done
+ * column is empty, and every other column is untouched.
+ */
+function clearDoneCards() {
+  const doneId = doneColumnId(board);
+  if (!doneId) return;
+  const cards = board.tasks[doneId].length;
+  if (!cards) return;
+  if (!confirm(`Delete ${cards} completed card${cards === 1 ? "" : "s"}? This cannot be undone.`)) return;
+  board.tasks[doneId] = [];
+  save(); render();
+}
+
 function render() {
   renderStats();
+
+  /* Clear-completed button: only enabled while the done column holds cards. */
+  const doneId = doneColumnId(board);
+  const doneCount = doneId ? board.tasks[doneId].length : 0;
+  const clearBtn = $("clearDoneBtn");
+  clearBtn.disabled = !doneCount;
+  clearBtn.title = doneCount
+    ? "Delete " + doneCount + " completed card" + (doneCount === 1 ? "" : "s")
+    : "No completed cards to clear";
 
   /* Rebuild the column picker from the current columns. */
   const picker = $("taskCol");
@@ -649,6 +673,7 @@ $("taskTitle").addEventListener("keydown", (e) => {
 
 /* Export/import: download the board as JSON, or load one back in. */
 $("exportBtn").addEventListener("click", exportBoard);
+$("clearDoneBtn").addEventListener("click", clearDoneCards);
 $("sampleBtn").addEventListener("click", loadSampleBoard);
 $("importBtn").addEventListener("click", () => $("importFile").click());
 $("importFile").addEventListener("change", (e) => {
