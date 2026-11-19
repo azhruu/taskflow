@@ -509,6 +509,9 @@ function render() {
       const del = document.createElement("button");
       del.className = "del"; del.textContent = "✕"; del.title = "Delete";
       del.addEventListener("click", () => {
+        /* Deleting a card is permanent and has no undo, so it asks first —
+           like deleting a column or clearing completed cards already do. */
+        if (!confirm(`Delete "${t.title}"? This cannot be undone.`)) return;
         const f = findTask(t.id);
         if (f) { board.tasks[f.col].splice(f.i, 1); save(); render(); }
       });

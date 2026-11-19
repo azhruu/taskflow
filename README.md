@@ -19,7 +19,7 @@
 - 📅 Due dates — pick one in the add form or with the 📅 button on any card; overdue cards turn red, due-today amber (cards in Done stay neutral), click the date to change or clear it
 - 🖱️ Drag & drop cards between columns (HTML5 drag events) — or use the ◀ ▶ buttons on a card to move it to the neighbouring column without dragging
 - ✏️ Double-click any card to edit its title inline (Enter saves, Esc cancels)
-- ➕ Quick-add form, one-click delete
+- ➕ Quick-add form, one-click delete (asks first — deleting a card cannot be undone)
 - 💾 Auto-save to `localStorage` — refresh-proof
 - 🌑 Clean dark UI, responsive grid
 

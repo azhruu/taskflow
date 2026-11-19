@@ -16,3 +16,4 @@ Each item lands as one complete, tested change.
 - [x] Polish: click a label chip on a card to filter the board by that label — it fills the search box with the label name, so the existing search does the filtering
 - [x] Polish: ◀ ▶ move buttons on each card shift it to the neighbouring column without dragging — for touch and keyboard users, disabled at the board's edges
 - [x] Polish: clear completed — one button empties the Done column (with a confirm naming how many cards go), disabled while there is nothing completed
+- [x] Polish: deleting a card asks first — it was the only destructive action without a confirm, so it now names the card and says it cannot be undone
