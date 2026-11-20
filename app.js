@@ -51,6 +51,22 @@ function formatDue(due) {
   const d = parseDue(due);
   return d ? d.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) : "";
 }
+/*
+ * Relative due text: "due today", "tomorrow", "yesterday", "in 3 days",
+ * "2 days overdue" — so a card's chip says how far away the date is,
+ * not just the calendar date.
+ */
+function relativeDue(due, now) {
+  const d = parseDue(due);
+  if (!d) return "";
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const days = Math.round((d.getTime() - today.getTime()) / 86400000);
+  if (days === 0) return "due today";
+  if (days === 1) return "tomorrow";
+  if (days === -1) return "yesterday";
+  if (days < 0) return (-days) + " days overdue";
+  return "in " + days + " days";
+}
 
 /*
  * Stats header: how much of the board is done, as a progress bar.
@@ -549,7 +565,7 @@ function render() {
         chip.type = "button";
         /* Cards already in Done stay neutral — the work is finished, not late. */
         chip.className = "due" + (c.id === "done" ? " due-done" : status ? " due-" + status : "");
-        chip.textContent = "📅 " + formatDue(t.due) + (c.id !== "done" && status === "overdue" ? " · overdue" : status === "today" ? " · due today" : "");
+        chip.textContent = "📅 " + formatDue(t.due) + (c.id !== "done" ? " · " + relativeDue(t.due, new Date()) : "");
         chip.title = "Click to change the due date";
         chip.addEventListener("click", () => { openDueFor = t.id; render(); });
         el.appendChild(chip);

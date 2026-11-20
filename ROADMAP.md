@@ -17,3 +17,4 @@ Each item lands as one complete, tested change.
 - [x] Polish: ◀ ▶ move buttons on each card shift it to the neighbouring column without dragging — for touch and keyboard users, disabled at the board's edges
 - [x] Polish: clear completed — one button empties the Done column (with a confirm naming how many cards go), disabled while there is nothing completed
 - [x] Polish: deleting a card asks first — it was the only destructive action without a confirm, so it now names the card and says it cannot be undone
+- [x] Polish: due-date chips show a relative day count — "in 2 days", "tomorrow", "due today", "yesterday", "3 days overdue" — so a card says how far away its date is, not just the calendar date (cards in Done stay neutral, as before)

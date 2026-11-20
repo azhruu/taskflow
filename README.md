@@ -16,7 +16,7 @@
 - 🔎 Search/filter — live text search across card titles and label names, with a match count and Esc to clear; click a label chip on any card to filter by that label
 - 🗂️ Custom columns — add, rename, and delete board columns (with live card counts)
 - 🏷️ Card labels — tag any card **bug** (red), **feature** (green) or **urgent** (amber) from the 🏷 button; labels persist with the board
-- 📅 Due dates — pick one in the add form or with the 📅 button on any card; overdue cards turn red, due-today amber (cards in Done stay neutral), click the date to change or clear it
+- 📅 Due dates — pick one in the add form or with the 📅 button on any card; overdue cards turn red, due-today amber (cards in Done stay neutral), and the chip shows a relative day count ("in 2 days", "tomorrow", "3 days overdue"); click the date to change or clear it
 - 🖱️ Drag & drop cards between columns (HTML5 drag events) — or use the ◀ ▶ buttons on a card to move it to the neighbouring column without dragging
 - ✏️ Double-click any card to edit its title inline (Enter saves, Esc cancels)
 - ➕ Quick-add form, one-click delete (asks first — deleting a card cannot be undone)
