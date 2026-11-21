@@ -18,3 +18,4 @@ Each item lands as one complete, tested change.
 - [x] Polish: clear completed — one button empties the Done column (with a confirm naming how many cards go), disabled while there is nothing completed
 - [x] Polish: deleting a card asks first — it was the only destructive action without a confirm, so it now names the card and says it cannot be undone
 - [x] Polish: due-date chips show a relative day count — "in 2 days", "tomorrow", "due today", "yesterday", "3 days overdue" — so a card says how far away its date is, not just the calendar date (cards in Done stay neutral, as before)
+- [x] Polish: Esc closes an open label menu or due-date editor, and clicking outside an open label menu closes it — the menu previously only closed by toggling the same card's 🏷 button again

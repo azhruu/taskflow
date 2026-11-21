@@ -672,6 +672,15 @@ function searchShortcut(event) {
   return !isTypingTarget(event.target);
 }
 document.addEventListener("keydown", (e) => {
+  /*
+   * Esc closes an open label menu or due-date editor. The label menu
+   * has no input to catch the key, so the document listener does it;
+   * the due input's own Esc handler runs first and clears openDueFor,
+   * so this is a no-op while the picker is focused.
+   */
+  if (e.key === "Escape" && (openLabelFor !== null || openDueFor !== null)) {
+    openLabelFor = null; openDueFor = null; render(); return;
+  }
   if (newTaskShortcut(e)) {
     e.preventDefault();
     const title = $("taskTitle");
@@ -688,6 +697,18 @@ document.addEventListener("keydown", (e) => {
 });
 $("taskTitle").addEventListener("keydown", (e) => {
   if (e.key === "Escape") $("taskTitle").blur();
+});
+
+/*
+ * Click outside an open label menu or due-date editor closes it — the
+ * menu has no blur event, so without this it could only be closed by
+ * toggling the same card's 🏷 button again. Clicks inside the menu,
+ * the editor, or on the buttons that open them are left alone.
+ */
+document.addEventListener("click", (e) => {
+  if (openLabelFor === null && openDueFor === null) return;
+  if (e.target.closest(".label-menu, .due-edit, .labelbtn, .due")) return;
+  openLabelFor = null; openDueFor = null; render();
 });
 
 /* Export/import: download the board as JSON, or load one back in. */
