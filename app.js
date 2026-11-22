@@ -271,12 +271,26 @@ function toggleLabel(id, label) {
   save(); render();
 }
 
-function moveTask(id, toCol) {
+/*
+ * Drop-position move: take the card out of its column and insert it in
+ * `toCol` just before the card with id `beforeId` (or at the end when
+ * `beforeId` is null or not in that column). Dropping a card onto itself
+ * is a no-op — without the guard the remove-then-insert would send it
+ * to the end of its column. moveTask() is the append-to-end case.
+ */
+function moveTaskTo(id, toCol, beforeId) {
   const found = findTask(id);
-  if (!found || found.col === toCol || !board.tasks[toCol]) return;
+  if (!found || !board.tasks[toCol]) return;
+  if (beforeId != null && beforeId === id) return;
   board.tasks[found.col].splice(found.i, 1);
-  board.tasks[toCol].push(found.task);
+  const list = board.tasks[toCol];
+  const at = beforeId == null ? -1 : list.findIndex((t) => t.id === beforeId);
+  if (at === -1) list.push(found.task);
+  else list.splice(at, 0, found.task);
   save(); render();
+}
+function moveTask(id, toCol) {
+  moveTaskTo(id, toCol, null);
 }
 
 /*
@@ -597,6 +611,24 @@ function render() {
         el.classList.add("dragging");
       });
       el.addEventListener("dragend", () => el.classList.remove("dragging"));
+      /*
+       * Drop onto a card to land just before it — the column drop below
+       * only ever appends to the end, so without this there is no way
+       * to order cards. The accent line shows where the card will land.
+       */
+      el.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        el.classList.add("drop-before");
+      });
+      el.addEventListener("dragleave", (e) => {
+        if (!el.contains(e.relatedTarget)) el.classList.remove("drop-before");
+      });
+      el.addEventListener("drop", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        el.classList.remove("drop-before");
+        moveTaskTo(Number(e.dataTransfer.getData("text/plain")), c.id, t.id);
+      });
       wrap.appendChild(el);
     }
 

@@ -41,6 +41,7 @@ form.addcol button{background:#0d1117;border-color:var(--border);color:var(--tex
 .card{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;cursor:grab}
 .card:active{cursor:grabbing}
 .card.dragging{opacity:.45}
+.card.drop-before{box-shadow:0 -3px 0 0 var(--accent)}
 .card .del{background:none;border:none;color:#f85149;cursor:pointer;font-size:14px;padding:0}
 .card-main{display:flex;justify-content:space-between;gap:8px;align-items:center}
 .card-main span{flex:1;overflow-wrap:anywhere}
