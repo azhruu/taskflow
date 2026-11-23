@@ -13,7 +13,7 @@
 - 📊 Card counter stats header — live count of done vs total cards with a progress bar and overdue count, updated on every change
 - 🧹 Clear completed — one click empties the Done column (asks first, naming how many cards go); disabled while nothing is completed
 - 📦 Export/import — download the whole board as one JSON file, or import one back (invalid files are rejected, unknown labels and bad dates are dropped, import confirms before replacing the board)
-- 🔎 Search/filter — live text search across card titles and label names, with a match count and Esc to clear; click a label chip on any card to filter by that label
+- 🔎 Search/filter — live text search across card titles and label names, with a match count and Esc to clear; while filtering, each column header shows how many of its cards match ("X of Y"); click a label chip on any card to filter by that label
 - 🗂️ Custom columns — add, rename, and delete board columns (with live card counts)
 - 🏷️ Card labels — tag any card **bug** (red), **feature** (green) or **urgent** (amber) from the 🏷 button; labels persist with the board. Esc closes the open label menu or due-date editor, and clicking outside an open label menu closes it
 - 📅 Due dates — pick one in the add form or with the 📅 button on any card; overdue cards turn red, due-today amber (cards in Done stay neutral), and the chip shows a relative day count ("in 2 days", "tomorrow", "3 days overdue"); click the date to change or clear it

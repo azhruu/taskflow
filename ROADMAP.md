@@ -20,3 +20,4 @@ Each item lands as one complete, tested change.
 - [x] Polish: due-date chips show a relative day count — "in 2 days", "tomorrow", "due today", "yesterday", "3 days overdue" — so a card says how far away its date is, not just the calendar date (cards in Done stay neutral, as before)
 - [x] Polish: Esc closes an open label menu or due-date editor, and clicking outside an open label menu closes it — the menu previously only closed by toggling the same card's 🏷 button again
 - [x] Polish: drag a card onto another card to drop it just before that card — reorder within a column, or place it at a position in another column, instead of always landing at the end
+- [x] Polish: column header counts show "X of Y" while searching — so each column says how many of its cards match the filter, not just its total

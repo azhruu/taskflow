@@ -392,6 +392,9 @@ function render() {
     section.dataset.col = c.id;
 
     const h2 = document.createElement("h2");
+    /* While searching, the count shows how many of the column's cards match. */
+    const visibleInCol = board.tasks[c.id].filter((t) => matchesSearch(t, q)).length;
+    const totalInCol = board.tasks[c.id].length;
     const title = document.createElement("span");
     title.className = "col-title";
     title.textContent = c.name;
@@ -421,7 +424,10 @@ function render() {
     actions.className = "col-actions";
     const count = document.createElement("span");
     count.className = "count";
-    count.textContent = board.tasks[c.id].length;
+    count.textContent = q ? visibleInCol + " of " + totalInCol : totalInCol;
+    count.title = q
+      ? visibleInCol + " of " + totalInCol + " cards match the search"
+      : totalInCol + " card" + (totalInCol === 1 ? "" : "s");
     const renameBtn = document.createElement("button");
     renameBtn.type = "button";
     renameBtn.className = "iconbtn";
