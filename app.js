@@ -646,6 +646,17 @@ function render() {
       wrap.appendChild(empty);
     }
 
+    /*
+     * An empty column says so — a blank column looks broken and hides
+     * that it is a drop target for cards dragged from elsewhere.
+     */
+    if (!q && totalInCol === 0) {
+      const empty = document.createElement("p");
+      empty.className = "empty-col";
+      empty.textContent = "No cards yet — drag one here";
+      wrap.appendChild(empty);
+    }
+
     section.addEventListener("dragover", (e) => { e.preventDefault(); section.classList.add("dragover"); });
     section.addEventListener("dragleave", () => section.classList.remove("dragover"));
     section.addEventListener("drop", (e) => {

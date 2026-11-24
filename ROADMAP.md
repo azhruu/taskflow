@@ -21,3 +21,4 @@ Each item lands as one complete, tested change.
 - [x] Polish: Esc closes an open label menu or due-date editor, and clicking outside an open label menu closes it — the menu previously only closed by toggling the same card's 🏷 button again
 - [x] Polish: drag a card onto another card to drop it just before that card — reorder within a column, or place it at a position in another column, instead of always landing at the end
 - [x] Polish: column header counts show "X of Y" while searching — so each column says how many of its cards match the filter, not just its total
+- [x] Polish: empty columns show a "No cards yet — drag one here" placeholder — a blank column looked broken and hid that it is a drop target for cards dragged from elsewhere
