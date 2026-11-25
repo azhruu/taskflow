@@ -8,6 +8,7 @@
 
 ## Features
 
+- 🌓 Dark/light theme toggle — switch the whole board between dark and light; your choice is remembered, otherwise it follows your OS setting
 - 🎲 Sample board — one click loads a small realistic board (labels, due dates, a card in each state) so first-time users can explore; an empty board loads straight away, a board with cards asks first since it replaces the board
 - ⌨️ Keyboard shortcut — press **N** anywhere (except while typing) to jump to the new-task box; Esc leaves it again. Press **/** anywhere to jump to the search box
 - 📊 Card counter stats header — live count of done vs total cards with a progress bar and overdue count, updated on every change
@@ -22,7 +23,7 @@
 - ✏️ Double-click any card to edit its title inline (Enter saves, Esc cancels)
 - ➕ Quick-add form, one-click delete (asks first — deleting a card cannot be undone)
 - 💾 Auto-save to `localStorage` — refresh-proof
-- 🌑 Clean dark UI, responsive grid
+- 🌑 Clean dark UI (light theme one click away), responsive grid
 
 ## Run it
 

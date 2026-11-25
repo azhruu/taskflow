@@ -1,4 +1,6 @@
-:root{--bg:#0d1117;--panel:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff}
+:root{--bg:#0d1117;--bg2:#0d1117;--panel:#161b22;--border:#30363d;--text:#e6edf3;--muted:#8b949e;--accent:#58a6ff}
+/* Light theme: same variables, light values — the toggle flips <body>. */
+body.light{--bg:#f6f8fa;--bg2:#ffffff;--panel:#ffffff;--border:#d0d7de;--text:#1f2328;--muted:#656d76;--accent:#0969da}
 *{box-sizing:border-box}
 body{margin:0;font-family:"Segoe UI",system-ui,Arial,sans-serif;background:var(--bg);color:var(--text)}
 header{padding:32px 20px 4px;max-width:1100px;margin:auto}
@@ -8,10 +10,10 @@ header p{color:var(--muted);margin:0}
 .stats-text{display:flex;gap:12px;align-items:baseline;flex-wrap:wrap}
 .stats-text strong{font-size:15px}
 .stats-detail{color:var(--muted);font-size:13px}
-.progress{height:10px;background:#0d1117;border:1px solid var(--border);border-radius:20px;margin-top:8px;overflow:hidden}
+.progress{height:10px;background:var(--bg2);border:1px solid var(--border);border-radius:20px;margin-top:8px;overflow:hidden}
 .progress-fill{height:100%;width:0%;background:#3fb950;border-radius:20px;transition:width .25s ease}
 form{display:flex;gap:10px;flex-wrap:wrap;max-width:1100px;margin:18px auto;padding:0 20px}
-input,select,button{background:#0d1117;color:var(--text);border:1px solid var(--border);border-radius:8px;padding:9px 11px;font-size:14px}
+input,select,button{background:var(--bg2);color:var(--text);border:1px solid var(--border);border-radius:8px;padding:9px 11px;font-size:14px}
 input{flex:1;min-width:220px}
 button{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700;cursor:pointer}
 .board{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;max-width:1100px;margin:6px auto;padding:0 20px}
@@ -26,20 +28,20 @@ button{background:var(--accent);border-color:var(--accent);color:#fff;font-weigh
 .col-rename{flex:1;min-width:0;padding:4px 6px;font-size:14px}
 form.addcol{margin-top:-8px}
 form.addcol input{flex:0 1 280px;min-width:180px}
-form.addcol button{background:#0d1117;border-color:var(--border);color:var(--text)}
+form.addcol button{background:var(--bg2);border-color:var(--border);color:var(--text)}
 .searchrow{display:flex;gap:10px;align-items:center;max-width:1100px;margin:8px auto;padding:0 20px}
 .hint{max-width:1100px;margin:-8px auto 0;padding:0 20px;color:var(--muted);font-size:13px}
-.hint kbd{background:#0d1117;border:1px solid var(--border);border-bottom-width:2px;border-radius:5px;padding:1px 6px;font:inherit;font-weight:700;color:var(--text)}
+.hint kbd{background:var(--bg2);border:1px solid var(--border);border-bottom-width:2px;border-radius:5px;padding:1px 6px;font:inherit;font-weight:700;color:var(--text)}
 .searchrow input{flex:1}
 .search-count{color:var(--muted);font-size:13px;white-space:nowrap}
 .toolbar{display:flex;gap:10px;flex-wrap:wrap;max-width:1100px;margin:8px auto;padding:0 20px}
-.toolbtn{background:#0d1117;border-color:var(--border);color:var(--text)}
+.toolbtn{background:var(--bg2);border-color:var(--border);color:var(--text)}
 .toolbtn:disabled{opacity:.35;cursor:not-allowed}
 .no-match{color:var(--muted);font-size:13px;text-align:center;margin:8px 0}
 .empty-col{color:var(--muted);font-size:13px;text-align:center;margin:8px 0;border:1px dashed var(--border);border-radius:8px;padding:14px 8px}
-.count{background:#0d1117;border:1px solid var(--border);border-radius:20px;padding:1px 10px;font-size:12px;color:var(--muted)}
+.count{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:1px 10px;font-size:12px;color:var(--muted)}
 .cards{display:flex;flex-direction:column;gap:8px;min-height:60px}
-.card{background:#0d1117;border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;cursor:grab}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;display:flex;flex-direction:column;gap:6px;cursor:grab}
 .card:active{cursor:grabbing}
 .card.dragging{opacity:.45}
 .card.drop-before{box-shadow:0 -3px 0 0 var(--accent)}

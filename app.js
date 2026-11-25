@@ -15,6 +15,38 @@ let openLabelFor = null; // id of the card whose label menu is open, null = none
 let openDueFor = null; // id of the card whose due-date editor is open, null = none
 let searchQuery = ""; // live card filter text, "" = show every card
 
+/*
+ * Theme: a saved choice wins; otherwise follow the OS preference
+ * (prefers-color-scheme); the default is the existing dark theme.
+ * The choice is a `light` class on <body>, so every color comes from
+ * the CSS variables and the whole board flips.
+ */
+const THEME_KEY = "taskflow-theme-v1";
+const THEMES = ["dark", "light"];
+let theme = loadTheme();
+function loadTheme() {
+  try {
+    const saved = localStorage.getItem(THEME_KEY);
+    if (THEMES.includes(saved)) return saved;
+  } catch { /* fall through */ }
+  try {
+    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) return "light";
+  } catch { /* fall through */ }
+  return "dark";
+}
+function applyTheme() {
+  document.body.classList.toggle("light", theme === "light");
+  const btn = $("themeBtn");
+  btn.textContent = theme === "light" ? "🌙 Dark theme" : "☀️ Light theme";
+  btn.setAttribute("aria-pressed", String(theme === "light"));
+  btn.title = theme === "light" ? "Switch to dark theme" : "Switch to light theme";
+}
+function toggleTheme() {
+  theme = theme === "light" ? "dark" : "light";
+  try { localStorage.setItem(THEME_KEY, theme); } catch { /* private mode */ }
+  applyTheme();
+}
+
 const DEFAULT_COLUMNS = [
   { id: "todo", name: "To Do" },
   { id: "doing", name: "In Progress" },
@@ -761,6 +793,7 @@ document.addEventListener("click", (e) => {
 });
 
 /* Export/import: download the board as JSON, or load one back in. */
+$("themeBtn").addEventListener("click", toggleTheme);
 $("exportBtn").addEventListener("click", exportBoard);
 $("clearDoneBtn").addEventListener("click", clearDoneCards);
 $("sampleBtn").addEventListener("click", loadSampleBoard);
@@ -771,4 +804,5 @@ $("importFile").addEventListener("change", (e) => {
   e.target.value = "";
 });
 
+applyTheme();
 render();
