@@ -70,7 +70,10 @@ form.addcol button{background:var(--bg2);border-color:var(--border);color:var(--
 .due-overdue{border-color:#f85149;color:#f85149;font-weight:700}
 .due-today{border-color:#d29922;color:#d29922;font-weight:700}
 .due-done{color:var(--muted)}
-.due-edit{display:flex;gap:6px;align-items:center}
+.due-edit{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.due-quick{display:flex;gap:6px;flex-basis:100%}
+.due-quick-btn{background:none;border:1px solid var(--border);color:var(--muted);border-radius:20px;padding:3px 10px;font-size:12px;font-weight:400;cursor:pointer}
+.due-quick-btn:hover{color:var(--text);border-color:var(--accent)}
 .due-input{flex:1;min-width:0;padding:5px 8px;font-size:13px}
 .due-clear{background:none;border:1px solid var(--border);color:var(--muted);border-radius:6px;padding:5px 9px;font-size:12px;font-weight:400;cursor:pointer}
 .due-clear:hover{color:#f85149;border-color:#f85149}

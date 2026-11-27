@@ -99,6 +99,13 @@ function relativeDue(due, now) {
   if (days < 0) return (-days) + " days overdue";
   return "in " + days + " days";
 }
+/*
+ * Quick-set due dates: "Today" / "Tomorrow" / "Next week" as YYYY-MM-DD
+ * strings. sampleDue is the offset-from-today formatter (it also serves
+ * the sample board); a function declaration, so calling it here is fine
+ * even though it is defined further down the file.
+ */
+function dueInDays(days) { return sampleDue(days, new Date()); }
 
 /*
  * Stats header: how much of the board is done, as a progress bar.
@@ -609,6 +616,23 @@ function render() {
           clear.addEventListener("mousedown", (e) => { e.preventDefault(); openDueFor = null; setDue(t.id, ""); });
           row.appendChild(clear);
         }
+        /*
+         * Quick-set: one click for the common dates, no picker needed.
+         * mousedown (not click), like Clear above: the date input's blur
+         * handler would re-render first and swallow the click.
+         */
+        const quick = document.createElement("div");
+        quick.className = "due-quick";
+        for (const [label, days] of [["Today", 0], ["Tomorrow", 1], ["Next week", 7]]) {
+          const b = document.createElement("button");
+          b.type = "button";
+          b.className = "due-quick-btn";
+          b.textContent = label;
+          b.title = "Set due date to " + label.toLowerCase();
+          b.addEventListener("mousedown", (e) => { e.preventDefault(); openDueFor = null; setDue(t.id, dueInDays(days)); });
+          quick.appendChild(b);
+        }
+        row.appendChild(quick);
         el.appendChild(row);
         input.focus();
       } else if (t.due) {

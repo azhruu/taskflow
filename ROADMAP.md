@@ -23,3 +23,4 @@ Each item lands as one complete, tested change.
 - [x] Polish: column header counts show "X of Y" while searching — so each column says how many of its cards match the filter, not just its total
 - [x] Polish: empty columns show a "No cards yet — drag one here" placeholder — a blank column looked broken and hid that it is a drop target for cards dragged from elsewhere
 - [x] Polish: dark/light theme toggle — the whole board flips to a light theme (same CSS variables, light values); the choice is remembered in localStorage, otherwise it follows the OS setting, like NoteVault already does
+- [x] Polish: quick-set due dates — the due-date editor offers Today / Tomorrow / Next week buttons that set the date in one click, next to the picker and the Clear button, so the common dates never need the calendar picker

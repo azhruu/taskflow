@@ -17,7 +17,7 @@
 - 🔎 Search/filter — live text search across card titles and label names, with a match count and Esc to clear; while filtering, each column header shows how many of its cards match ("X of Y"); click a label chip on any card to filter by that label
 - 🗂️ Custom columns — add, rename, and delete board columns (with live card counts)
 - 🏷️ Card labels — tag any card **bug** (red), **feature** (green) or **urgent** (amber) from the 🏷 button; labels persist with the board. Esc closes the open label menu or due-date editor, and clicking outside an open label menu closes it
-- 📅 Due dates — pick one in the add form or with the 📅 button on any card; overdue cards turn red, due-today amber (cards in Done stay neutral), and the chip shows a relative day count ("in 2 days", "tomorrow", "3 days overdue"); click the date to change or clear it
+- 📅 Due dates — pick one in the add form or with the 📅 button on any card; overdue cards turn red, due-today amber (cards in Done stay neutral), and the chip shows a relative day count ("in 2 days", "tomorrow", "3 days overdue"); click the date to change or clear it, or use the one-click Today / Tomorrow / Next week buttons in the date editor
 - 🪧 Empty-column placeholder — a column with no cards says "No cards yet — drag one here" instead of sitting blank, so it reads as a drop target
 - 🖱️ Drag & drop cards between columns (HTML5 drag events) — drop a card on another card to place it just before that card and reorder within a column, or use the ◀ ▶ buttons on a card to move it to the neighbouring column without dragging
 - ✏️ Double-click any card to edit its title inline (Enter saves, Esc cancels)
@@ -35,7 +35,7 @@ python3 -m http.server 8000   # http://localhost:8000
 
 ## Roadmap
 
-Keyboard shortcut (N for new task) → sample board button. The roadmap is now complete — full plan: [ROADMAP.md](ROADMAP.md).
+Keyboard shortcut (N for new task) → sample board button → quick-set due dates. The roadmap is now complete — full plan: [ROADMAP.md](ROADMAP.md).
 
 ## License
 
