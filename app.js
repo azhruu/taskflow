@@ -14,6 +14,7 @@ const LABELS = {
 let openLabelFor = null; // id of the card whose label menu is open, null = none
 let openDueFor = null; // id of the card whose due-date editor is open, null = none
 let searchQuery = ""; // live card filter text, "" = show every card
+let overdueOnly = false; // show only cards past their due date (not in Done)
 
 /*
  * Theme: a saved choice wins; otherwise follow the OS preference
@@ -150,8 +151,16 @@ function setDue(id, due) {
   save(); render();
 }
 
-/* Search: a card matches when its title or any of its label names contains the query. */
-function matchesSearch(task, query) {
+/*
+ * Search: a card matches when its title or any of its label names contains the query.
+ * With "Overdue only" on, only cards past their due date match — cards already in
+ * the done column are finished, not late, so they never match. `colId` is the
+ * column the card sits in; the done column comes from doneColumnId().
+ */
+function matchesSearch(task, query, colId) {
+  if (overdueOnly) {
+    if (colId === doneColumnId(board) || dueStatus(task.due, new Date()) !== "overdue") return false;
+  }
   if (!query) return true;
   const hay = [task.title]
     .concat((task.labels || []).map((l) => (LABELS[l] ? LABELS[l].name : l)))
@@ -414,15 +423,18 @@ function render() {
 
   /* Live search: count matches first so the status line is exact. */
   const q = searchQuery.trim().toLowerCase();
+  const filtering = q || overdueOnly;
   let total = 0, shown = 0;
   for (const c of board.columns)
     for (const t of board.tasks[c.id]) {
       total++;
-      if (matchesSearch(t, q)) shown++;
+      if (matchesSearch(t, q, c.id)) shown++;
     }
-  $("searchCount").textContent = q
-    ? (shown ? shown + " of " + total + " card" + (total === 1 ? "" : "s")
-             : "No cards match \"" + searchQuery.trim() + "\"")
+  $("searchCount").textContent = filtering
+    ? (shown ? shown + " of " + total + " card" + (total === 1 ? "" : "s") + (overdueOnly ? " overdue" : "")
+             : overdueOnly
+               ? "No overdue cards" + (q ? " matching \"" + searchQuery.trim() + "\"" : "")
+               : "No cards match \"" + searchQuery.trim() + "\"")
     : "";
 
   for (const c of board.columns) {
@@ -432,7 +444,7 @@ function render() {
 
     const h2 = document.createElement("h2");
     /* While searching, the count shows how many of the column's cards match. */
-    const visibleInCol = board.tasks[c.id].filter((t) => matchesSearch(t, q)).length;
+    const visibleInCol = board.tasks[c.id].filter((t) => matchesSearch(t, q, c.id)).length;
     const totalInCol = board.tasks[c.id].length;
     const title = document.createElement("span");
     title.className = "col-title";
@@ -463,9 +475,9 @@ function render() {
     actions.className = "col-actions";
     const count = document.createElement("span");
     count.className = "count";
-    count.textContent = q ? visibleInCol + " of " + totalInCol : totalInCol;
-    count.title = q
-      ? visibleInCol + " of " + totalInCol + " cards match the search"
+    count.textContent = filtering ? visibleInCol + " of " + totalInCol : totalInCol;
+    count.title = filtering
+      ? visibleInCol + " of " + totalInCol + " cards match the filter"
       : totalInCol + " card" + (totalInCol === 1 ? "" : "s");
     const renameBtn = document.createElement("button");
     renameBtn.type = "button";
@@ -489,7 +501,7 @@ function render() {
     wrap.className = "cards";
     let shownInCol = 0;
     for (const t of board.tasks[c.id]) {
-      if (!matchesSearch(t, q)) continue;
+      if (!matchesSearch(t, q, c.id)) continue;
       shownInCol++;
       const el = document.createElement("div");
       el.className = "card";
@@ -694,8 +706,8 @@ function render() {
       wrap.appendChild(el);
     }
 
-    /* While searching, say so in columns where nothing matches. */
-    if (q && shownInCol === 0) {
+    /* While filtering, say so in columns where nothing matches. */
+    if (filtering && shownInCol === 0) {
       const empty = document.createElement("p");
       empty.className = "no-match";
       empty.textContent = "No matching cards";
@@ -706,7 +718,7 @@ function render() {
      * An empty column says so — a blank column looks broken and hides
      * that it is a drop target for cards dragged from elsewhere.
      */
-    if (!q && totalInCol === 0) {
+    if (!filtering && totalInCol === 0) {
       const empty = document.createElement("p");
       empty.className = "empty-col";
       empty.textContent = "No cards yet — drag one here";
@@ -749,6 +761,9 @@ $("search").addEventListener("input", () => { searchQuery = $("search").value; r
 $("search").addEventListener("keydown", (e) => {
   if (e.key === "Escape") { searchQuery = ""; $("search").value = ""; render(); }
 });
+
+/* Overdue-only filter: show just the cards past their due date. */
+$("overdueOnly").addEventListener("change", () => { overdueOnly = $("overdueOnly").checked; render(); });
 
 /*
  * Keyboard shortcut: press N anywhere except while typing in a field to
